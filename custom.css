@@ -1,0 +1,898 @@
+:root{
+  --red:#e4183e;
+  --black:#231F20;
+  --grey:#d1d2d4;
+}
+
+body {
+  color: white;
+  background-color: var(--black);
+  margin: 0px; }
+
+.header {
+  margin-right: 0;
+  margin-left: 0;
+  background-color: var(--red);
+  }
+
+#icon{
+  margin:0.5%;
+}
+
+#dynamicNavDropdown ul{
+  background-color: var(--black);
+}
+
+#dynamicNavDropdown ul a{
+  color:white;
+}
+
+.closebtn {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.closebtn:hover {
+    color: black;
+}
+
+.editButton:hover{
+  background: #C1CDCD;
+}
+
+.editButtonContent:hover{
+  background: #C1CDCD;
+}
+
+.editButton{
+  /* float: none; */
+  /* align-content: center; */
+  height: 25%;
+  position: relative;
+  /* width: 250%; */
+  /* margin-bottom: 38%; */
+  /* margin-right: 55%;
+  padding: 10%; */
+  /* padding-left: 4%;
+  padding-right: 4%; */
+  /* border-bottom: .5px solid black; */
+
+}
+
+.editButtonContent{
+  width: 20%;
+  height: 100%;
+  /* border-left: 5px solid #DDDDDD; */
+  border-right: 1px solid black;
+  border-top: .05px solid black;
+  border-bottom: .05px solid black;
+}
+
+
+.select-style {
+    border: 1px solid #ccc;
+    width: 120px;
+    border-radius: 3px;
+    overflow: hidden;
+    background: #fafafa url("../images/icon-select.png") no-repeat 90% 50%;
+    font-size: 1.8vw;
+}
+
+.select-style select {
+    padding: 8px 6px;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    background-image: none;
+    -webkit-appearance: block;
+}
+
+.select-style select:focus {
+    outline: none;
+}
+
+#select-styleSeason {
+    border: 1px solid #ccc;
+    width: 120px;
+    border-radius: 3px;
+    overflow: hidden;
+    background: #fafafa url("../images/icon-select.png") no-repeat 90% 50%;
+    font-size: 1.8vw;
+}
+
+#select-styleSeason select {
+    padding: 6px 6px;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    background-image: none;
+    -webkit-appearance: block;
+}
+
+#select-styleSeason select:focus {
+    outline: none;
+}
+
+
+
+
+
+#printBtn{
+  max-height:40px;
+}
+
+#mainContentContainer{
+  box-sizing: border-box;
+  position: relative;
+  min-height:calc(100% - 82px);
+  background-color: #231F20;
+}
+
+#mainContent{
+  overflow: hidden; /* formally auto. fixed to remove scroll bar from bottom of main div */
+  padding-bottom: 5%;
+  max-width: 96%;
+
+}
+
+#footer {
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  background-color: var(--red);
+  text-align: center;
+  height:100px;
+  clear:both;
+}
+  #footer > p {
+    padding: 30px; }
+
+.nav-link{
+  color:white;
+  text-align: center;
+}
+
+.nav-link:hover{
+    color:var(--grey);
+  };
+
+.nav-link-icon-tray {
+  color:white;
+  float:right;
+
+}
+
+.nav-link-icon-tray img {
+  height:65%;
+  width:65%;
+}
+
+.calendarChair{
+  float: right;
+  height: 100%;
+}
+
+.profileChair{
+  /* commenting to stop breakage position: absolute;*/
+  width:29%;
+  height:70%;
+  min-height: 98%;
+  max-height: 100%;
+  float:left;
+  background-color: #333232;
+  margin-right: 1%;
+  margin-top:8%;
+  padding-left: 2%;
+  padding-right: 2%;
+  padding-top: 1%;
+}
+
+.modal {
+  color: black;
+}
+
+.popover-header{
+  background-color: var(--grey);
+}
+
+.classCount{
+  float:right;
+}
+
+.logoutButton{
+  margin-left:1500%;
+}
+
+/* Team 7 - CSS */
+html, body {
+  height:100%;
+  width:100%
+}
+
+header {
+  align-items: left;
+/*  font-size: calc(16px + (26 - 16) * ((100vw - 300px) / (1600 - 300))); */
+  margin-bottom: 2em;
+  margin-top: 1em;
+  background: black;
+  color: white;
+  min-height: 10vh;
+  text-align: center;
+}
+
+ul {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin: 0 auto;
+  /* commenting for discussion later max-width: 64em;*/
+
+}
+
+li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  list-style: none;
+  margin-left: 0em;
+
+  width: 8.3vw;
+  font-size: calc(16px + (21 - 16) * ((100vw - 300px) / (1600 - 300)));
+}
+
+ul.weekdays {
+  margin-bottom: .05em;
+  color: white;
+  clear: both;
+}
+
+ul.weekdays li {
+/*  height: 4vw;*/
+width: 8.9vw;
+}
+
+ul.day-grid li {
+
+  height: 4.2vw;
+  width: 8.9vw;
+  max-height: 4.3vw;
+  /* max height previosly 100px. */
+  max-width: 10vw;
+  float: right;
+}
+
+ul.weekdays abbr[title] {
+  border: none;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+ul.day-grid li:nth-child(1),
+ul.day-grid li:nth-child(2),
+ul.day-grid li:nth-child(3),
+ul.day-grid li:nth-child(34),
+ul.day-grid li:nth-child(35) {
+
+
+}
+
+.calendar{
+  width: 65%;
+  float: right;
+  height: 100%;
+}
+
+.profile{
+  /* commenting to stop breakage position: absolute;*/
+  width:29%;
+  height:70%;
+  min-height: 98%;
+  max-height: 100%;
+
+  float:left;
+  background-color: #333232;
+  margin-left: 5%;
+  margin-right: 1%;
+  margin-top:6.6%;
+  padding-left: 2%;
+  padding-right: 2%;
+  padding-top: 1%;
+  border-radius: 25px;
+}
+
+
+
+#creditLoad{
+  font-size: .7.5vw;
+  display:inline;
+}
+
+#classDropdown{
+
+  overflow:auto;
+  font-size: .9vw;
+
+}
+
+.tempClasses{
+  padding-left: 1.2vw;
+  font-size: .6vw;
+}
+
+
+
+.sidebar{
+  width:30%;
+  height:100%;
+  float:left;
+  clear:both;
+
+}
+.icons{
+  height:63%;
+  width:50%;
+}
+
+.logout{
+  margin-top: 20%;
+  margin-left: 15%
+  float: right;
+  align:right;
+
+}
+
+.status{
+  position: absolute;
+  top: 1%;
+  right: 10%;
+}
+
+.faq{
+  position: absolute;
+  top: 1%;
+  right: 14%;
+}
+
+button.cell-button {
+  color: black;
+  text-decoration: none;
+  transition: all 0.5s;
+  width: 100%;
+  height: 100%;
+  font-size: .66vw;
+  text-align: left;
+  vertical-align: middle;
+  border-top: .5px solid black;
+  border-bottom: .5px solid black;
+  border-left: .5px solid black;
+  border-right: .5px solid #DDDD;
+  padding: 0%;
+  padding-left: 8%;
+  clear:both;
+  line-height: 1;
+  background-color: #ECECEC;
+}
+
+button.cell-button2 {
+  color: black;
+  text-decoration: none;
+  transition: all 0.5s;
+  width: 100%;
+  height: 100%;
+  font-size: .66vw;
+  text-align: left;
+  vertical-align: middle;
+  border-top: .5px solid black;
+  border-bottom: .5px solid black;
+  border-left: .5px solid black;
+  border-right: .5px solid #DDDD;
+  padding: 0%;
+  padding-left: 8%;
+  padding-right: 5%;
+}
+
+button.cell-button-total {
+  color: black;
+  text-decoration: none;
+  transition: all 0.5s;
+  width: 100%;
+  height: 100%;
+  font-size: .66vw;
+  text-align: left;
+  vertical-align: middle;
+  border: .5px solid black;
+
+}
+
+button.no-hover {
+  color: black;
+  text-decoration: none;
+  transition: all 0.5s;
+  width: 100%;
+  height: 100%;
+  font-size: .66vw;
+  text-align: left;
+  vertical-align: middle;
+  border: .5px solid black;
+}
+
+.timeslot{
+  color: white;
+  text-decoration: none;
+  width: 100%;
+  height: 100%;
+  font-size: 16px;
+  padding-top: 10%;
+  text-align: left;
+  vertical-align: middle;
+  height: 12vw;
+  max-height: 100px;
+  float: right;
+
+}
+
+button.cell-button:hover {
+  color: #00000;
+  background-color:#C1CDCD;
+  text-decoration: none;
+  width: 100%;
+  height: 100%;
+  text-align: left;
+  vertical-align: middle;
+  border: .5px solid black;
+}
+.popover-header{
+  color:black;
+}
+.calendar-options{
+  width: 83%;
+  height:100%;
+  padding-left: 5%;
+  float: right;
+  display: flex;
+}
+.custom-button{
+  font-size: 16px;
+  color: black;
+  line-height: 1.5;
+  padding: .5em 1.5em;
+  border: none;
+  background: white;
+  box-shadow: 0 2px 0 0 #316CB0;
+  border-radius: 6px;
+
+}
+
+
+.custom-button:hover{
+  font-size: 16px;
+  color: black;
+  line-height: 1.5;
+  padding: .5em 1.5em;
+  border: none;
+  background: #e2e2e2;
+  transition: all .3s;
+  border-radius: 6px;
+}
+
+ul.calendar-options-list li {
+  height:7em;
+  max-height: 10vw;
+  margin-left:10%;
+
+}
+
+.filter-form {
+  font-size: 50%;
+
+  padding-left:2em;
+
+}
+
+.filter-option{
+  margin-left: 10%;
+  font-size: 80%;
+  padding-top:10%;
+  padding-left: 10;
+
+}
+
+
+.sidebar-custom{
+  font-size: .8vw;
+  padding-left: 5%;
+  padding-right:2%;
+}
+
+#semester-title {
+  float:right;
+  margin-top:1vw;
+  margin-bottom: 1vw;
+  padding-right:5.2%;
+}
+
+.hide {
+  display: none;
+}
+
+
+
+@media all and (max-width: 1000px) {
+  .icons{
+    height:60%;
+    width:50%;
+  }
+  .calendar{
+    width: 70%;
+    float: right;
+    height: 100%;
+    display:inline-block;
+  }
+  .calendar-options{
+    width: 90%;
+    margin-top:2%;
+    float: right;
+    display: inline;
+    padding-left: 0%;
+  }
+
+  .profile{
+
+    width:27%;
+    height:40%;
+
+    float:left;
+    background-color: #333232;
+    margin-left: 2%;
+    margin-right: 1%;
+    margin-top:5%;
+    padding-left: 1%;
+    padding-top: 1%;
+  }
+
+
+  .select-style {
+      border: 1px solid #ccc;
+      width: 120px;
+      border-radius: 3px;
+      overflow: hidden;
+      background: #fafafa url("../images/icon-select.png") no-repeat 90% 50%;
+      font-size: 1.8vw;
+      width:100%;
+  }
+
+  .select-style select {
+      padding: 8px 6px;
+      border: none;
+      box-shadow: none;
+      background: transparent;
+      background-image: none;
+      -webkit-appearance: block;
+  }
+
+  .select-style select:focus {
+      outline: none;
+  }
+
+  #select-styleSeason {
+      border: 1px solid #ccc;
+      width: 120px;
+      border-radius: 3px;
+      overflow: hidden;
+      background: #fafafa url("../images/icon-select.png") no-repeat 90% 50%;
+      font-size: 1.8vw;
+      width:100%;
+  }
+
+  #select-styleSeason select {
+      padding: 6px 6px;
+      border: none;
+      box-shadow: none;
+      background: transparent;
+      background-image: none;
+      -webkit-appearance: block;
+  }
+
+  #select-styleSeason select:focus {
+      outline: none;
+  }
+
+  .sidebar-custom{
+    font-size: 1vw;
+    padding-left: 5%;
+    padding-right:2%;
+  }
+
+  .editButton:hover{
+    background: #C1CDCD;
+  }
+
+  .editButtonContent:hover{
+    background: #C1CDCD;
+  }
+
+.editButton{
+  /* float: none; */
+  /* align-content: center; */
+  height: 25%;
+  position: relative;
+  /* width: 250%; */
+  /* margin-bottom: 38%; */
+  /* margin-right: 55%;
+  padding: 10%; */
+  /* padding-left: 4%;
+  padding-right: 4%; */
+  /* border-left: .5px solid black;
+  border-bottom: .5px solid black; */
+}
+
+.editButtonContent{
+  width: 20%;
+  height: 100%;
+  /* border-left: 5px solid #DDDDDD; */
+  border-right: 1px solid black;
+  border-top: .05px solid black;
+  border-bottom: .05px solid black;
+}
+
+.h1Font{
+  font-size: 100%;
+}
+  .selectedClass{
+    line-height: .2;
+    position:absolute;
+    bottom:0;
+    width:24%;
+
+
+
+    clear:left;
+    float:left;
+    background-color: #333232;
+    margin-bottom:120px;
+    margin-right: 1%;
+    margin-left:1.5%;
+
+
+
+
+  }
+  #classDropdown{
+
+    overflow:auto;
+    width:90%;
+    font-size: 35%;
+
+  }
+
+  button.cell-button {
+    color: black;
+    text-decoration: none;
+    transition: all 0.5s;
+    width: 100%;
+    height: 100%;
+    font-size: .66vw;
+    text-align: left;
+    vertical-align: middle;
+    border-top: .5px solid black;
+    border-bottom: .5px solid black;
+    border-left: .5px solid black;
+    border-right: .5px solid #DDDD;
+    padding: 0%;
+    padding-left: 8%;
+    clear:both;
+    line-height: 1;
+    background-color: #ECECEC;
+  }
+
+  button.cell-button2 {
+    color: black;
+    text-decoration: none;
+    transition: all 0.5s;
+    width: 100%;
+    height: 100%;
+    font-size: .66vw;
+    text-align: left;
+    vertical-align: middle;
+    border-top: .5px solid black;
+    border-bottom: .5px solid black;
+    border-left: .5px solid black;
+    border-right: .5px solid #DDDD;
+    padding: 0%;
+    padding-left: 8%;
+    padding-right: 5%;
+  }
+
+  button.cell-button:hover {
+    color: #00000;
+    background-color:#C1CDCD;
+    text-decoration: none;
+    font-size: .66vw;
+    width: 100%;
+    height: 100%;
+    text-align: left;
+    vertical-align: text-top;
+    border: .5px solid black;
+  }
+  button.no-hover {
+    color: black;
+    text-decoration: none;
+    transition: all 0.5s;
+    width: 100%;
+    height: 100%;
+    font-size: 8px;
+    text-align: left;
+    vertical-align: middle;
+    border: .5px solid black;
+  }
+
+  .sidebar{
+    width:90%;
+
+    float:left;
+    clear:both;
+    display: block;
+
+  }
+
+  .filter-option{
+    margin-left: 10%;
+    font-size: 80%;
+    padding-top:5%;
+    padding-left: 10;
+
+  }
+  td{
+    padding-top: 0px;
+    height:30%;
+    max-height: 50%;
+
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    list-style: none;
+    margin-left: 0em;
+    width: 8.3vw;
+    font-size: calc(16px + (21 - 16) * ((100vw - 300px) / (1600 - 300)));
+  }
+
+
+ul.calendar-options-list  li{
+  height:7em;
+  max-height: 10vw;
+  display:inline;
+  padding-left: 0%;
+  margin-left:0px;
+
+}
+
+ul.weekdays li {
+  font-size: 0;
+  width: 8.3vw;
+}
+
+ul.weekdays > li abbr:after {
+  content: attr(title);
+  font-size: calc(16px + (26 - 16) * ((100vw - 300px) / (1600 - 300)));
+  text-align: center;
+    }
+
+    .timeslot{
+      color: white;
+      text-decoration: none;
+      width: 100%;
+      height: 100%;
+      font-size: 10px;
+      padding-top: 10%;
+      text-align: left;
+      vertical-align: middle;
+      height: 12vw;
+      max-height: 100px;
+      float: right;
+      background-color: #231F20;
+    }
+    ul.day-grid li {
+
+      height: 4.2vw;
+      width: 8.3vw;
+      max-height: 4.3vw;
+      /* max height previosly 100px. */
+      max-width: 8.5vw;
+      float: right;
+    }
+
+    .custom-button{
+      font-size: 10px;
+      color: black;
+      line-height: 1.5;
+      padding: .5em 1.5em;
+      border: none;
+      background: white;
+      box-shadow: 0 2px 0 0 #316CB0;
+      border-radius: 6px;
+      width:90%;
+      display:inline-block;
+
+    }
+    .dropdown{
+      height:60%;
+      width:60%;
+    }
+
+    .custom-button:hover{
+      font-size: 10px;
+      color: black;
+      line-height: 1.5;
+      padding: .5em 1.5em;
+      border: none;
+      background: #e2e2e2;
+      transition: all .3s;
+      border-radius: 6px;
+    }
+    #semester-title {
+      float:right;
+      margin-top:1vw;
+      margin-bottom: 1vw;
+      padding-right:5.2%;
+    }
+    #mainContentContainer{
+      box-sizing: border-box;
+      position: relative;
+      min-height:calc(100% - 82px);
+      background-color: #231F20;
+    }
+
+    #mainContent{
+      overflow: hidden; /* formally auto. fixed to remove scroll bar from bottom of main div */
+      padding-bottom: 0px;
+      margin-right:0px;
+      max-width: 96%;
+      height:90%;
+
+
+
+
+    }
+
+    @media print{
+        body {
+          color: black;
+          margin: 0px;
+
+        }
+        .noPrint{
+          display:none;
+        }
+
+
+        .cellButton {
+          width: 100%;
+          height: 100%;
+          font-size: 6px;
+          text-align: right;
+          vertical-align: text-top;
+          border: .5px solid black;
+          padding: 0%;
+          /* padding-right: 8%; */
+
+        }
+
+        @page{
+          margin:2cm;
+        }
+      }
+
+  .pointer{
+    cursor: pointer;
+  }
+
+
+}

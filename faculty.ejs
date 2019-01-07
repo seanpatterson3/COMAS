@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<!-- Team 7 (faculty view)
+Ariele Silva, Sean Patterson, Jack Connly, Charles Schmitz, Chris Holt, and Eric Burel
+Please contact any one of these members with questions regarding this page or accompanying pages.
+This team's files consist of:
+	-this file
+	-../js/custom.js
+	-../css/custom.css
+other files are used but not maintained by this team
+-->
+
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,  initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" type = "text/css" href="../css/custom.css">
+    <title>COMAS Faculty View</title>
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"></script>
+    <!-- JS file -->
+    <link rel="icon" href="images/favicon.ico">
+  </head>
+    <body style="background-color: #37393f">
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Timeslot:</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        <div class="modal-body" style="padding-left:17%;">
+          <div id="addCourseForm">
+            <h5>Add A Course</h5>
+              <div>
+                <form action="" id="modalForm">
+                <div>
+                  <div id="classDropdown"></div><br>
+                  <input type="checkbox" id="labRoom" style="opacity: 50%;" disabled="disabled">
+                  <label for "labRoom" style="color: gray;"> Request Lab Room</label>
+                  <br>
+                  <input type="checkbox" id="override" style="opacity: 50%;" disabled="disabled">
+                  <label for="override" style="color: gray;"> Override Traditional Meeting Times </label>
+                  <br>
+                  <div id="selectExtraTimeblock" style="display:none;">
+                  <div id="tsdd1"></div> </div><br>
+                  <button type="submit"  class="btn btn-primary" onclick="saveChanges(modalForm)" > Save Changes</button>
+                </div>
+              </form>
+            </div>
+            <hr>
+            <h5>Remove A Course</h5>
+            <p> Don't want to teach this course? <br>
+              Request To Remove: </p><br>
+              <button type="button" class="btn btn-danger" onclick="deleteButtonFunction()">Remove</button> <br><br>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div data-include = "nav-bar-user" ></div>
+    <div class = "container-fluid" id = "mainContentContainer">
+    <br>
+    <div id = "dynamicNavDropdown" class = "col-md-3 noPrint"></div>
+    <br>
+    <div class = "row-fluid" id = "mainContent">
+      <div class="container-fluid">
+        <div class="profile noPrint" >
+        <div id="userEmail" style="display:none;"><%= user.userEmail%></div>
+          <p><h5 class="h1Font">Welcome, <%= user.userFirstName%> <%= user.userLastName%>!</br><br>Information Panel:</h5></p>
+          <p class ="sidebar-custom noPrint" id="user-info">
+			Annual contract credits required: <%= user.userCreditReq%></p>
+			<div class="sidebar-custom noPrint" >Contract credits this year: <div id="creditLoad"></div> </div>
+			<p class ="sidebar-custom noPrint" id="semester-info"> <br>
+        <hr>
+			Classes Verified: <div id="verifiedClasses" class="sidebar-custom "></div>
+			Classes Pending: <div id="pendingClasses" class="sidebar-custom "></div>
+      <br> <br>
+			</p>
+      </div>
+      </div>
+      <div class="container-fluid">
+      <div class="calendar">
+      <script>
+      const logURL = 'http://10.10.9.171:12201/gelf';
+      $("#semester-title").change(function(form){
+      	try {
+      		console.log(document.getElementById("semester-title").val)
+
+      	} catch {
+          //do nothing
+      }
+      });
+      </script>
+      	<div id="result"></div>
+          <div class="btn-group" id="semester-title">
+            <input id="semesterSetter" type="button" value="Set Semester" onclick="resetOG(); setSemester();"></input> &nbsp; &nbsp;
+              <div id="select-styleSeason">
+                <select name='classInformation' id='semesterSeasonSelect' form="semesterForm">
+                  <option value="Spring">Spring</option>
+                  <option value="Fall" selected>Fall</option>
+                </select></div> &nbsp;
+              <div class="select-style">
+                <select name='classInformation'  id='semesterYearSelect'form="semesterForm">
+                  <option value="2019">2016</option>
+                  <option value="2019">2017</option>
+                  <option value="2018" selected>2018</option>
+                  <option value="2019">2019</option>
+              </select></div>
+              <script>
+              function setSemester(){
+                var semesterSeason = document.getElementById('semesterSeasonSelect').value;
+                var semesterYear = document.getElementById('semesterYearSelect').value;
+                parseInt(semesterYear);
+                  //reinitialize and rebuild calendar using the new semester
+              };
+            </script>
+          </div>
+	          <ul class="weekdays">
+              <li style="display:none;"></li>
+	            <li>
+	              <abbr title=" "></abbr> <!-- Replace Sunday column with times & remove "calendar box" style-->
+	            </li>
+	            <li>
+	              <abbr title="M">Monday</abbr>
+	            </li>
+	            <li>
+	              <abbr title="T">Tuesday</abbr>
+	            </li>
+	            <li>
+	              <abbr title="W">Wednesday</abbr>
+	            </li>
+	            <li>
+	              <abbr title="T">Thursday</abbr>
+	            </li>
+	            <li>
+	              <abbr title="F">Friday</abbr>
+	            </li>
+	            <!-- <li>
+	              <abbr title="S">Saturday</abbr>
+	            </li> -->
+	          </ul>
+            <ul class="day-grid">
+           <li style="display:none;"></li>
+           <li class="timeslot" > <p>8:00 AM</p> </li>
+           <li id="timeslot1A" onclick="altSendClickId(this.id)"><button data-html=true type="button" id="timeslot1a" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+             1: <br><div style="display:inline;" id="M08:00:00" ></div></button>
+             <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal" ><img class="editButton" src="../images/pencil.png" alt="Edit"></button>
+           <li id="timeslot3A" onclick="altSendClickId(this.id)">  <button data-html=true type="button" id="timeslot3a" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+             3: <br><div style="display:inline;" id="T08:00:00" ></div></button>
+             <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit"></button>
+           <li id="timeslot5A" onclick="altSendClickId(this.id)">  <button data-html=true type="button" id="timeslot5a" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+             5: <br><div style="display:inline;" id="W08:00:00" ></div></button>
+             <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit" ></button>
+           <li id="timeslot1B" onclick="altSendClickId(this.id)">  <button data-html=true type="button" id="timeslot1b" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+             1: <br><div style="display:inline;" id="R08:00:00" ></div></button>
+             <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit"></button>
+           <li id="timeslot3B" onclick="altSendClickId(this.id)">  <button data-html=true type="button" id="timeslot3b" data-verificationstatus="0" class="cell-button cell-button2" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+             3: <br><div style="display:inline;" id="F08:00:00" ></div></button>
+           <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit" ></button>
+                         <!-- <li >  <button data-html=true type="button" id="timeslot25a" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);"><img class="editButton" src="../images/pencil.png" alt="Edit" onclick="sendClickId(this.id); datatagToClassInfo(this.id);">
+                           <br>25<div id="S08:00:00"></div></button> -->
+         <li style="width:1%;"></li>
+           <li class="timeslot"> <p>9:30 AM</p> </li>
+         <li id="timeslot2A" onclick="altSendClickId(this.id)">  <button data-html=true type="button"  id="timeslot2a" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+            2: <br><div style="display:inline;" id="M09:30:00" ></div></button>
+           <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit" ></button>
+         <li id="timeslot4A" onclick="altSendClickId(this.id)">  <button data-html=true type="button"  id="timeslot4a" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+            4: <br><div style="display:inline;" id="T09:30:00" ></div></button>
+         <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit"></button>
+         <li id="timeslot6A" onclick="altSendClickId(this.id)">  <button data-html=true type="button"  id="timeslot6a" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+            6: <br><div style="display:inline;" id="W09:30:00" ></div></button>
+         <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit"></button>
+         <li id="timeslot2B" onclick="altSendClickId(this.id)">  <button data-html=true type="button"  id="timeslot2b" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+           2: <br><div style="display:inline;" id="R09:30:00" ></div></button>
+           <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit" ></button>
+         <li id="timeslot4B" onclick="altSendClickId(this.id)">  <button data-html=true type="button"  id="timeslot4b" data-verificationstatus="0" class="cell-button cell-button2" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+           4: <br><div style="display:inline;" id="F09:30:00" ></div></button>
+           <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit"></button>
+           <!-- <li >  <button data-html=true type="button"  id="timeslot25b" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);"><img class="editButton" src="../images/pencil.png" alt="Edit" onclick="sendClickId(this.id); datatagToClassInfo(this.id);">
+           <br>25<div id="S09:30:00"></div></button> -->
+         <li style="width:1%;"></li>
+             <li class="timeslot"> <p>11:00 AM</p> </li>
+         <li id="timeslot6B" onclick="altSendClickId(this.id)">  <button data-html=true type="button"  id="timeslot6b" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+           6: <br><div style="display:inline;" id="M11:00:00" ></div></button>
+           <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit" ></button>
+         <li id="timeslot7A" onclick="altSendClickId(this.id)">  <button data-html=true type="button"  id="timeslot7a" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+           7: <br><div style="display:inline;" id="T11:00:00" ></div></button>
+           <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit" ></button>
+         <li><button data-html=true type="button" class="no-hover" title="Activity Hour" onclick="sendClickId(this.id); datatagToClassInfo(this.id);"><div style="display:none" id = "W11:00:00"></div>Activity Hour</button>
+         <li id="timeslot7B" onclick="altSendClickId(this.id)"><button data-html=true type="button"  id="timeslot7b" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);">
+           7: <br><div style="display:inline;" id="R11:00:00" ></div></button>
+           <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit" ></button>
+         <li id="timeslot5B" onclick="altSendClickId(this.id)">  <button data-html=true type="button"  id="timeslot5b" data-verificationstatus="0" class="cell-button cell-button2" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+           5: <br><div style="display:inline;" id="F11:00:00" ></div></button>
+         <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit" ></button>
+         <!-- <li >  <button data-html=true type="button"  id="timeslot26a" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);"><img class="editButton" src="../images/pencil.png" alt="Edit" onclick="sendClickId(this.id); datatagToClassInfo(this.id);">
+           <br>26<div id="S11:00:00"></div></button> -->
+       <li style="width:1%;"></li>
+             <li class="timeslot"> <p>12:30 PM</p> </li>
+         <li id="timeslot8A" onclick="altSendClickId(this.id)">  <button data-html=true type="button"  id="timeslot8a" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+           8: <br><div style="display:inline;" id="M12:30:00" ></div></button>
+           <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit"></button>
+         <li id="timeslot9A" onclick="altSendClickId(this.id)">  <button data-html=true type="button"  id="timeslot9a" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+           9: <br><div style="display:inline;" id="T12:30:00"></div></button>
+           <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit" ></button>
+         <li> <button data-html=true type="button" class="no-hover" title="Activity Hour"><div style="display:none" id = "W12:30:00"></div>Activity Hour</button>
+         <li id="timeslot8B" onclick="altSendClickId(this.id)">  <button data-html=true type="button"  id="timeslot8b" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+           8: <br><div style="display:inline;" id="R12:30:00" ></div></button>
+           <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit" ></button>
+         <li id="timeslot9B" onclick="altSendClickId(this.id)">  <button data-html=true type="button"  id="timeslot9b" data-verificationstatus="0" class="cell-button cell-button2" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+           9: <br><div style="display:inline;" id="F12:30:00" ></div></button>
+           <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit" ></button>
+         <!-- <li >  <button data-html=true type="button"  id="timeslot26b" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);"><img class="editButton" src="../images/pencil.png" alt="Edit" onclick="sendClickId(this.id); datatagToClassInfo(this.id);">
+         <br>26<div id="S1230:00"></div></button> -->
+         <li style="width:1%;"></li>
+           <li class="timeslot"> <p>2:00 PM</p> </li>
+         <li id="timeslot10A" onclick="altSendClickId(this.id)">  <button data-html=true type="button"  id="timeslot10a" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+           10: <br><div style="display:inline;" id="M14:00:00"></div></button>
+           <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit" ></button>
+         <li id="timeslot11A" onclick="altSendClickId(this.id)">  <button data-html=true type="button"  id="timeslot11a" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+           11: <br><div style="display:inline;" id="T14:00:00"></div></button>
+           <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit" ></button>
+         <li id="timeslot12A" onclick="altSendClickId(this.id)">  <button data-html=true type="button"  id="timeslot12a" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+           12: <br><div style="display:inline;" id="W14:00:00"></div></button>
+           <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit"></button>
+         <li id="timeslot10B" onclick="altSendClickId(this.id)">  <button data-html=true type="button"  id="timeslot10b" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+           10: <br><div style="display:inline;" id="R14:00:00"></div></button>
+           <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit"></button>
+         <li id="timeslot11B" onclick="altSendClickId(this.id)">  <button data-html=true type="button"  id="timeslot11b" data-verificationstatus="0" class="cell-button cell-button2" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+           11: <br><div style="display:inline;"id="F14:00:00"></div></button>
+           <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit" ></button>
+         <!-- <li >  <button data-html=true type="button"  id="timeslot27a" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);"><img class="editButton" src="../images/pencil.png" alt="Edit" onclick="sendClickId(this.id); datatagToClassInfo(this.id);">
+           <br>27<div id="S14:00:00"></div></button> -->
+         <li style="width:1%;"></li>
+             <li class="timeslot"> <p>3:30 PM</p> </li>
+         <li id="timeslot13A" onclick="altSendClickId(this.id)">  <button data-html=true type="button"  id="timeslot13a" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+           13: <br><div style="display:inline;" id="M15:30:00"></div></button>
+           <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit" ></button>
+         <li id="timeslot14A" onclick="altSendClickId(this.id)">  <button data-html=true type="button"  id="timeslot14a" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+           14: <br><div style="display:inline;" id="T15:30:00"></div></button>
+           <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit" ></button>
+         <li id="timeslot13B" onclick="altSendClickId(this.id)">  <button data-html=true type="button"  id="timeslot13b" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+           13: <br><div style="display:inline;" id="W15:30:00"></div></button>
+           <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit"></button>
+           <li id="timeslot14B" onclick="altSendClickId(this.id)">  <button data-html=true type="button"  id="timeslot14b" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+         14: <br><div style="display:inline;" id="R15:30:00"></div></button>
+         <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit"></button>
+         <li id="timeslot12B" onclick="altSendClickId(this.id)">  <button data-html=true type="button"  id="timeslot12b" data-verificationstatus="0" class="cell-button cell-button2" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+           12: <br><div style="display:inline;" id="F15:30:00"></div></button>
+           <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit" ></button>
+         <!-- <li >  <button data-html=true type="button"  id="timeslot27b" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);"><img class="editButton" src="../images/pencil.png" alt="Edit" onclick="sendClickId(this.id); datatagToClassInfo(this.id);">
+           <br>27<div id="S15:30:00"></div></button> -->
+     <li style="width:1%;"></li>
+           <li class="timeslot"> <p>5:00 PM</p> </li>
+         <li id="timeslot15A" onclick="altSendClickId(this.id)">  <button data-html=true type="button"  id="timeslot15a" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+           15: <br><div style="display:inline;" id="M17:00:00"></div></button>
+         <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit" ></button>
+         <li id="timeslot16B" onclick="altSendClickId(this.id)">  <button data-html=true type="button"  id="timeslot16a" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+           16: <br><div style="display:inline;" id="T17:00:00"></div></button>
+         <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit" ></button>
+       <li id="timeslot15B" onclick="altSendClickId(this.id)">  <button data-html=true type="button"  id="timeslot15b" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+         15: <br><div style="display:inline;" id="W17:00:00"></div></button>
+           <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit" ></button>
+       <li id="timeslot16B" onclick="altSendClickId(this.id)">  <button data-html=true type="button"  id="timeslot16b" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+         16: <br><div id="R17:00:00"></div></button>
+         <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit" ></button>
+       <li><button data-html=true type="button" class="no-hover" title="No Classes Scheduled"><div style="display:none" id = "F17:00:00"></div></button>
+       <!-- <li ><button data-html=true type="button" class="no-hover" title="No Classes Scheduled"></button> -->
+       <li style="width:1%;"></li>
+         <li class="timeslot"> <p>6:30 PM</p> </li>
+         <li id="timeslot21A" onclick="altSendClickId(this.id)">  <button data-html=true type="button" id="timeslot21a" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+         21: <br><div style="display:inline;" id="M18:30:00"></div></button>
+         <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit" ></button>
+       <li id="timeslot22A" onclick="altSendClickId(this.id)">  <button data-html=true type="button" id="timeslot22a" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+         22: <br><div style="display:inline;" id="T18:30:00"></div></button>
+         <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit" ></button>
+         <li id="timeslot23A" onclick="altSendClickId(this.id)">  <button data-html=true type="button" id="timeslot23a" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+         23: <br><div style="display:inline;" id="W18:30:00"></div></button>
+         <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit" ></button>
+       <li id="timeslot24A" onclick="altSendClickId(this.id)">  <button data-html=true type="button" id="timeslot24a" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+         24: <br><div style="display:inline;" id="R18:30:00"></div></button>
+       <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit" ></button>
+       <li><button data-html=true type="button" class="no-hover" title="No Classes Scheduled"><div style="display:none" id = "F18:30:00"></button>
+       <!-- <li ><button data-html=true type="button" class="no-hover" title="No Classes Scheduled"></button> -->
+       <li style="width:1%;"></li>
+        <li class="timeslot"> <p>8:00 PM</p> </li>
+        <li id="timeslot21B" onclick="altSendClickId(this.id)">  <button data-html=true type="button" id="timeslot21b"  data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+         21: <br><div style="display:inline;" id="M20:00:00"></div></button>
+         <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit"></button>
+       <li id="timeslot22B" onclick="altSendClickId(this.id)">  <button data-html=true type="button" id="timeslot22b" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+         22: <br><div style="display:inline;" id="T20:00:00"></div></button>
+           <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit" ></button>
+         <li id="timeslot23B" onclick="altSendClickId(this.id)">  <button data-html=true type="button" id="timeslot23b" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+           23: <br><div style="display:inline;" id="W20:00:00"></div></button>
+           <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit"></button>
+         <li id="timeslot24B" onclick="altSendClickId(this.id)">  <button data-html=true type="button" id="timeslot24b" data-verificationstatus="0" class="cell-button" onclick="sendClickId(this.id); datatagToClassInfo(this.id);  initalizePopoverOnClick(); offeringIdFinder(this.id);">
+           24: <br><div style="display:inline;" id="R20:00:00"></div></button>
+           <button data-html=true type="button" class="editButtonContent" data-toggle="modal" data-target="#exampleModal"><img class="editButton" src="../images/pencil.png" alt="Edit"></button>
+         <li><button data-html=true type="button" class="no-hover" title="No Classes Scheduled"><div style="display:none" id = "F20:00:00"></button>
+         <!-- <li ><button data-html=true type="button" class="no-hover" title="No Classes Scheduled"></button> -->
+        </ul>
+          <div class="container-fluid calendar-options">
+            <form>
+            <table cellpadding="10">
+              <tr>
+                <td style="padding-right:8%;">
+                  <a class="nav-iten" href = "availablecourses">
+                <button type="button" class="custom-button noPrint" style="width:120%; ">Available Courses </button></a>
+            </td>
+            <td>
+                <button type="button" class="custom-button  noPrint" onclick="commitOfferings()">Submit</button>
+              </td>
+             <td>
+                <button type="button" id="printBtn" class="custom-button noPrint" onclick="window.print()">Download</button>
+              </td>
+            <td>
+                <p class="filter-option noPrint"><h6> Filter Options: </h6></p>
+              <div class="filter-form form-group">
+                <div class="form-check noPrint" >
+                  <input type="radio"  name="filter" value="Approved & Pending" onclick="this.checked=false; alert('Sorry, this feature is not available yet')"><font color="#66ff66" id="approved">Approved</font> <font id="approved"> & Pending</font>
+                  <br>
+                  <input type="radio" name="filter" value="Approved" onclick="this.checked=false; alert('Sorry, this feature is not available yet')"><font color="#66ff66" id="approved">Approved</font>
+                  <br>
+                  <input type="radio"  name="filter" value="Pending" onclick="this.checked=false; alert('Sorry, this feature is not available yet')"><font id="approved">Pending</font>
+                </div>
+              </div>
+            </td>
+           </tr>
+          </table>
+          </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<div data-include = "footer"></div>
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+<!-- Latest compiled and minified JavaScript for bootstrap-->
+<script src="../js/bootstrap.min.js"></script>
+<script>
+  //Dynamic navigation setup and implementation
+var userRankArr = [];
+  <%user.userRank.forEach(function(item) { %>
+    userRankArr.push("<%= item.userRankName%>")
+  <%})%>
+    if (userRankArr.length > 1){
+      var dropDownMenu = "<button class='btn btn-default dropdown-toggle' type='button' data-toggle='dropdown'>Change Roles<span class='caret'></span></button><ul class = 'dropdown-menu'>";
+      if (userRankArr.indexOf("Admin") != -1){
+        dropDownMenu += "<a href = '/Admin'><li>Admin</li></a>";
+      }
+      if(userRankArr.indexOf("Chair") != -1){
+        dropDownMenu += "<a href = '/chairHomePage'><li>Chair</li></a>";
+      }
+      dropDownMenu += "<a href = '/userHomePage'><li>Professor</li></a>";
+      dropDownMenu += "</ul>";
+
+      document.getElementById("dynamicNavDropdown").innerHTML = dropDownMenu;
+    }
+
+  var semesterYear = 2018;
+  var semesterSeason = "Fall"
+  var GLOBAL_LAST_CLICKED_ID = ""; // holds id of cell the popover was activated with
+  var GLOBAL_LAST_CLICKED_ID_COMP = ""; // holds the compliment of last clicked id: i.e. timeslot1b if variable above is timeslot1a
+  const userToken = '<%=userToken%>' // gets userToken
+  var selectedClass = ""; // initalize variable for value holding the class a user wants to display in the selected class info window
+
+	function quickPost(dest, data){ //data must come stringified
+		var xhr = new XMLHttpRequest();
+		xhr.addEventListener("readystatechange", function () {
+			if (this.readyState === 4) {
+			};
+		});
+		xhr.open("POST", dest);
+		xhr.setRequestHeader("Accept", "application/json");
+		xhr.setRequestHeader("Content-Type", "application/json");
+		xhr.setRequestHeader("cache-control", "no-cache");
+		xhr.setRequestHeader('Authorization', 'Bearer ' + userToken);
+		xhr.send(data);
+	};
+
+  function quickDelete(dest){ //pass the api address destination for deletion here, like: 'https://comas-api.ecrl.marist.edu/offerings/?offeringId=123'
+    var xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
+    xhr.addEventListener("readystatechange", function () {
+      if (this.readyState === 4) {
+      };
+    });
+    xhr.open("DELETE", dest);
+    xhr.setRequestHeader("Accept", "application/json");
+    xhr.setRequestHeader("cache-control", "no-cache");
+    xhr.setRequestHeader('Authorization', 'Bearer ' + userToken);
+    xhr.send();
+  };
+
+	function modifyOfferingInstructor(oID, uID){ //oID is offeringId and uID is offeringUserId, the id of the user desiring the course
+		var xmlhttpAddInst = new XMLHttpRequest();
+		var responseObj = {};
+		var AIJsonURL = "https://comas-api.ecrl.marist.edu/offerings/?offeringId=" + oID;
+		if(uID != null){  // if we're adding ourselves to an offering
+			var AIJsonSend = JSON.stringify({"offeringUserId": uID});
+			xmlhttpAddInst.onreadystatechange = function() { //executes when state change
+				if (this.readyState == 4 && this.status == 200) {
+					responseObj = JSON.parse(this.responseText); //puts the response to the request in this var as a JSON
+				};
+			};
+		}else if(uID == null){ //if we're abandoning an offering
+			var AIJsonSend = JSON.stringify({"offeringUserId": null});
+			xmlhttpAddInst.onreadystatechange = function() { //executes when state change
+				if (this.readyState == 4 && this.status == 200) {
+					responseObj = JSON.parse(this.responseText); //puts the response to the request in this var as a JSON
+				};
+			};
+		}else{//bad args
+	};
+
+	xmlhttpAddInst.open("PATCH", AIJsonURL, true ); //stage the request with optional fetch parameter (in "")
+	xmlhttpAddInst.setRequestHeader("Content-Type", "application/json");
+	xmlhttpAddInst.setRequestHeader("Accept", "application/json");
+	xmlhttpAddInst.setRequestHeader('Authorization', 'Bearer ' + userToken);
+	xmlhttpAddInst.send(AIJsonSend); //execute request
+  };
+
+  function deleteButtonFunction(cellId,uID) {
+    var xmlhttpDelButton = new XMLHttpRequest();
+    var responseObj = {};
+    var oID = document.getElementById(entire_cell_id).children[0].dataset.offeringid;
+    var AIJsonURL = "https://comas-api.ecrl.marist.edu/offerings/?offeringId=" + oID;
+    if(uID != null){  // if we're adding ourselves to an offering
+      var AIJsonSend = JSON.stringify({"offeringUserId": uID});
+      xmlhttpDelButton.onreadystatechange = function() { //executes when state change
+        if (this.readyState == 4 && this.status == 200) {
+          responseObj = JSON.parse(this.responseText); //puts the response to the request in this var as a JSON
+        };
+      };
+    }else if(uID == null){ //if we're abandoning an offering
+      var AIJsonSend = JSON.stringify({"offeringUserId": null});
+      xmlhttpDelButton.onreadystatechange = function() { //executes when state change
+        if (this.readyState == 4 && this.status == 200) {
+          responseObj = JSON.parse(this.responseText); //puts the response to the request in this var as a JSON
+          alert("Changes will appear on page refresh.");
+          $('#exampleModal').modal('toggle');
+        };
+      };
+    }else{//bad args
+  };
+
+  xmlhttpDelButton.open("PATCH", AIJsonURL, true ); //stage the request with optional fetch parameter (in "")
+  xmlhttpDelButton.setRequestHeader("Content-Type", "application/json");
+  xmlhttpDelButton.setRequestHeader("Accept", "application/json");
+  xmlhttpDelButton.setRequestHeader('Authorization', 'Bearer ' + userToken);
+  xmlhttpDelButton.send(AIJsonSend); //execute request
+  }
+
+  $(document).ready(function(){
+    //Trying to update includes function for loading items
+    $('[data-include]').each(function(){
+      var file = '/views/' + $(this).data('include') + '.html';
+      $(this).load(file);
+      });
+  });
+
+  function sendClickId(clicked_id) {  // takes id of last popover and creates a compliment for it.
+    GLOBAL_LAST_CLICKED_ID = clicked_id;
+    GLOBAL_LAST_CLICKED_ID_COMP = clicked_id;
+    GLOBAL_LAST_CLICKED_ID = GLOBAL_LAST_CLICKED_ID.replace(/.$/,"a");
+    GLOBAL_LAST_CLICKED_ID_COMP = GLOBAL_LAST_CLICKED_ID_COMP.replace(/.$/,"b");
+  }
+
+  function altSendClickId(clicked_id) { //sends id of entire cell including the edit button. This allows us to grab the id of the cell on click (to write info to) even if the user only clicks the edit button
+  entire_cell_id = clicked_id;
+  entire_cell_id_comp = clicked_id;
+  entire_cell_id = entire_cell_id.replace(/.$/,"A");
+  entire_cell_id_comp = entire_cell_id_comp.replace(/.$/,"B");
+  }
+
+  function finishPage(){
+  };
+
+  var jsonURL = 'https://comas-api.ecrl.marist.edu/courses/'; // change this to the table to get
+  var fetchObj = [];  //will house the converted json object
+  var fetchArr = [];  //will hold the x-dimensional array of pertinent information only
+  var courseObj = {};
+  var xmlhttp = new XMLHttpRequest(); //define the request function
+  //user object
+  var uem = document.getElementById("userEmail").innerHTML;   //get user email from page
+  var userJsonURL = 'https://comas-api.ecrl.marist.edu/users/?userEmail=' + uem;  //create json address
+  var user = {}; //will house the user object for use
+  var xmlhttpUser = new XMLHttpRequest(); //define the request function
+  var xmlhttpToken = new XMLHttpRequest(); //define Token request function
+  //timeblock object
+  var timeBlocks = {};  //houses timeblocks table from db
+  var returnTimeSlotDropdown;
+  var courseIdGlobal;
+  var verifiedFullCourseInfo=""; //houses the selected class popover information
+  var pendingFullCourseInfo="";
+  var courseInfoGlobal=""; //variable holding info to write to popover on click. (selected course information)
+  var courseNameGlobal="";
+//**********************************************
+  var lastClickedOfferingId;
+  var xmlhttpTimes = new XMLHttpRequest(); //define the request function
+  //calendar staging grid
+  var offeringsGrid = {};
+  function resetOG(){
+    offeringsGrid = {   // create calendar grid reference object.... first field is day ,  second field is time(ascending)
+  	"M":{
+  		"08:00:00":"nothing",
+  		"09:30:00":"nothing",
+  		"11:00:00":"nothing",
+  		"12:30:00":"nothing",
+  		"14:00:00":"nothing",
+  		"15:30:00":"nothing",
+  		"17:00:00":"nothing",
+  		"18:30:00":"nothing",
+  		"20:00:00":"nothing",
+  	},
+  	"T":{
+  		"08:00:00":"nothing",
+  		"09:30:00":"nothing",
+  		"11:00:00":"nothing",
+  		"12:30:00":"nothing",
+  		"14:00:00":"nothing",
+  		"15:30:00":"nothing",
+  		"17:00:00":"nothing",
+  		"18:30:00":"nothing",
+  		"20:00:00":"nothing",
+  	},
+  	"W":{
+  		"08:00:00":"nothing",
+  		"09:30:00":"nothing",
+  		"11:00:00":"nothing",
+  		"12:30:00":"nothing",
+  		"14:00:00":"nothing",
+  		"15:30:00":"nothing",
+  		"17:00:00":"nothing",
+  		"18:30:00":"nothing",
+  		"20:00:00":"nothing",
+  	},
+  	"R":{
+  		"08:00:00":"nothing",
+  		"09:30:00":"nothing",
+  		"11:00:00":"nothing",
+  		"12:30:00":"nothing",
+  		"14:00:00":"nothing",
+  		"15:30:00":"nothing",
+  		"17:00:00":"nothing",
+  		"18:30:00":"nothing",
+  		"20:00:00":"nothing",
+  	},
+  	"F":{
+  		"08:00:00":"nothing",
+  		"09:30:00":"nothing",
+  		"11:00:00":"nothing",
+  		"12:30:00":"nothing",
+  		"14:00:00":"nothing",
+  		"15:30:00":"nothing",
+  		"17:00:00":"nothing",
+  		"18:30:00":"nothing",
+  		"20:00:00":"nothing",
+  	},
+  	"S":{
+  		"08:00:00":"nothing",
+  		"09:30:00":"nothing",
+  		"11:00:00":"nothing",
+  		"12:30:00":"nothing",
+  		"14:00:00":"nothing",
+  		"15:30:00":"nothing",
+  		"17:00:00":"nothing",
+  		"18:30:00":"nothing",
+  		"20:00:00":"nothing",
+  	}
+  };
+}
+resetOG(); // reset function to refresh calendar on new semester selction
+
+var pendingList = [];
+
+function addOffering(uID, courseID, academicNeed, timeblockID1, timeblockID2, timeblockID3){
+  var semStr = semesterSeason + "-" + semesterYear;
+      var date = new Date();
+      date.toString();
+      var data1 = JSON.stringify({
+          "offeringCourseId": courseID,
+          "offeringSemester": semStr,
+          "offeringRequestTime": date,
+          "offeringUserId": uID
+	});
+
+//post offering with userId, semester, and courseId
+	var xmlhttpOff = new XMLHttpRequest();
+	xmlhttpOff.addEventListener("readystatechange", function () {
+		if (this.readyState === 4) {
+		newOffObj = JSON.parse(this.responseText); //puts the response to the request in this var as a JSON
+//wait for response object, then post the offeringTimes to the oID + timeBlockID
+		var offID = newOffObj.offeringId
+		if(timeblockID1 != null){
+			one = JSON.stringify({
+				"offeringTimeOfferingId": offID,
+				"offeringTimeTimeBlockId": timeblockID1
+			});
+			quickPost("https://comas-api.ecrl.marist.edu/offeringtimes/", one);};
+		if(timeblockID2 != null){
+			two = JSON.stringify({
+				"offeringTimeOfferingId": offID,
+				"offeringTimeTimeBlockId": timeblockID2
+			});
+			quickPost("https://comas-api.ecrl.marist.edu/offeringtimes/", two);};
+		if(timeblockID3 != null){
+			three = JSON.stringify({
+				"offeringTimeOfferingId": offID,
+				"offeringTimeTimeBlockId": timeblockID3
+			});
+			quickPost("https://comas-api.ecrl.marist.edu/offeringtimes/", three);};
+		};
+	});
+//stage offering post
+  xmlhttpOff.open("POST", 'https://comas-api.ecrl.marist.edu/offerings/', true ); //stage the request with optional fetch parameter (in "")
+  xmlhttpOff.setRequestHeader('Authorization', 'Bearer ' + userToken);
+	xmlhttpOff.setRequestHeader("Accept", "application/json");
+	xmlhttpOff.setRequestHeader("Content-Type", "application/json");
+	xmlhttpOff.setRequestHeader("cache-control", "no-cache");
+	xmlhttpOff.send(data1); //send the request then parse
+};
+
+function populateCalendar(){//puts courses in the correct slots in the calendar UI
+  var semStr = semesterSeason + "-" + semesterYear;
+   for(var i=0; i<user[0].userOfferings.length; i++ ){		//create course reference table for calendar
+     if(user[0].userOfferings[i].offeringSemester == semStr){
+     for(var j=0; j<user[0].userOfferings[i].offeringOfferingTimes.length; j++ ){
+       a = user[0].userOfferings[i].offeringOfferingTimes[j].offeringTimeTimeBlockId //returns an int (Id) to a
+       b = timeBlocks[a].timeBlockDoW
+       c = timeBlocks[a].timeBlockStart
+       offeringsGrid[b][c] = i;  //creates a pointer to the offered course in the user data. access this in user.Offerings[x].
+     };
+   };
+  };
+ // verification status legend:
+ //  0 - no course
+ //  1 - denied course
+ //  2 - pending
+ //  3 - approved
+ //fill calendar blocks with appropriate data
+ //OfferingsGrid.M.x returns an int that is a pointer to a specific userOffering (a class with a CRN)
+   for(x in offeringsGrid.M){
+     if(offeringsGrid.M[x] != "nothing"){
+       document.getElementById('M' + x).parentElement.dataset.courseid= courseObj[user[0].userOfferings[offeringsGrid.M[x]].offeringCourseId].courseId; //write course id to html data attribute
+       document.getElementById('M' + x).parentElement.dataset.offeringid = user[0].userOfferings[offeringsGrid.M[x]].offeringId;
+       insert = "CRN: " + user[0].userOfferings[offeringsGrid.M[x]].offeringCRN + ", Sec " + user[0].userOfferings[offeringsGrid.M[x]].offeringSection + "</br>" + courseObj[user[0].userOfferings[offeringsGrid.M[x]].offeringCourseId].courseNumber + " " + courseObj[user[0].userOfferings[offeringsGrid.M[x]].offeringCourseId].courseName;
+       document.getElementById('M'+ x).innerHTML = insert;
+    var j = user[0].userOfferings[offeringsGrid.M[x]].offeringOfferingResponses.length - 1;
+    if(user[0].userOfferings[offeringsGrid.M[x]].offeringOfferingResponses[j] == null){ //if pending
+        document.getElementById('M' + x).parentElement.style.backgroundColor = "#ECECEC";
+        document.getElementById('M' + x).parentElement.dataset.verificationstatus = 2; // verification status of 2 is pending
+    }else if(user[0].userOfferings[offeringsGrid.M[x]].offeringOfferingResponses[j].offeringResponseApproved == true){ //if approved
+         document.getElementById('M' + x).parentElement.style.backgroundColor = "#d1f9dd";
+         document.getElementById('M' + x).parentElement.dataset.verificationstatus = 3; // verification status of 3 is verified
+     }else{ //DENIED
+         document.getElementById('M' + x).parentElement.style.backgroundColor = "#ff9191";
+         document.getElementById('M' + x).parentElement.dataset.verificationstatus = 1; // verification status of 1 is denied
+       }
+     };
+   };
+   for(x in offeringsGrid.T){
+     if(offeringsGrid.T[x] != "nothing"){
+       document.getElementById('T' + x).parentElement.dataset.courseid= courseObj[user[0].userOfferings[offeringsGrid.T[x]].offeringCourseId].courseId; //write course id to html data attribute
+       document.getElementById('T' + x).parentElement.dataset.offeringid = user[0].userOfferings[offeringsGrid.T[x]].offeringId;
+       insert = "CRN: " + user[0].userOfferings[offeringsGrid.T[x]].offeringCRN + ", Sec " + user[0].userOfferings[offeringsGrid.T[x]].offeringSection + "</br>" + courseObj[user[0].userOfferings[offeringsGrid.T[x]].offeringCourseId].courseNumber + " " + courseObj[user[0].userOfferings[offeringsGrid.T[x]].offeringCourseId].courseName;
+       document.getElementById('T'+ x).innerHTML = insert;
+       var j = user[0].userOfferings[offeringsGrid.T[x]].offeringOfferingResponses.length - 1;
+       if(user[0].userOfferings[offeringsGrid.T[x]].offeringOfferingResponses[j] == null){ //if pending
+        document.getElementById('T' + x).parentElement.style.backgroundColor = "#ECECEC";
+      }else if(user[0].userOfferings[offeringsGrid.T[x]].offeringOfferingResponses[j].offeringResponseApproved == true){ //if approved
+         document.getElementById('T' + x).parentElement.style.backgroundColor = "#d1f9dd";
+       }else{
+        document.getElementById('T' + x).parentElement.style.backgroundColor = "#ff9191";
+       }
+     };
+   };
+   for(x in offeringsGrid.W){
+     if(offeringsGrid.W[x] != "nothing"){
+       document.getElementById('W' + x).parentElement.dataset.courseid= courseObj[user[0].userOfferings[offeringsGrid.W[x]].offeringCourseId].courseId; //write course id to html data attribute
+       document.getElementById('W' + x).parentElement.dataset.offeringid = user[0].userOfferings[offeringsGrid.W[x]].offeringId;
+       insert = "CRN: " + user[0].userOfferings[offeringsGrid.W[x]].offeringCRN + ", Sec " + user[0].userOfferings[offeringsGrid.W[x]].offeringSection + "</br>" + courseObj[user[0].userOfferings[offeringsGrid.W[x]].offeringCourseId].courseNumber + " " + courseObj[user[0].userOfferings[offeringsGrid.W[x]].offeringCourseId].courseName;
+       document.getElementById('W'+ x).innerHTML = insert;
+       var j = user[0].userOfferings[offeringsGrid.W[x]].offeringOfferingResponses.length - 1;
+       if(user[0].userOfferings[offeringsGrid.W[x]].offeringOfferingResponses[j] == null){ //if pending
+        document.getElementById('W' + x).parentElement.style.backgroundColor = "#ECECEC";
+      }else if(user[0].userOfferings[offeringsGrid.W[x]].offeringOfferingResponses[j].offeringResponseApproved == true){ //if approved
+         document.getElementById('W' + x).parentElement.style.backgroundColor = "#d1f9dd";
+       }else{
+        document.getElementById('W' + x).parentElement.style.backgroundColor = "#ff9191";
+       }
+     };
+   };
+   for(x in offeringsGrid.R){
+     if(offeringsGrid.R[x] != "nothing"){
+       document.getElementById('R' + x).parentElement.dataset.courseid= courseObj[user[0].userOfferings[offeringsGrid.R[x]].offeringCourseId].courseId; //write course id to html data attribute
+       document.getElementById('R' + x).parentElement.dataset.offeringid = user[0].userOfferings[offeringsGrid.R[x]].offeringId;
+       insert = "CRN: " + user[0].userOfferings[offeringsGrid.R[x]].offeringCRN + ", Sec " + user[0].userOfferings[offeringsGrid.R[x]].offeringSection + "</br>" + courseObj[user[0].userOfferings[offeringsGrid.R[x]].offeringCourseId].courseNumber + " " + courseObj[user[0].userOfferings[offeringsGrid.R[x]].offeringCourseId].courseName;
+       document.getElementById('R'+ x).innerHTML = insert;
+       var j = user[0].userOfferings[offeringsGrid.R[x]].offeringOfferingResponses.length - 1;
+       if(user[0].userOfferings[offeringsGrid.R[x]].offeringOfferingResponses[j] == null){ //if pending
+        document.getElementById('R' + x).parentElement.style.backgroundColor = "#ECECEC";
+      }else if(user[0].userOfferings[offeringsGrid.R[x]].offeringOfferingResponses[j].offeringResponseApproved == true){ //if approved
+         document.getElementById('R' + x).parentElement.style.backgroundColor = "#d1f9dd";
+       }else{
+         document.getElementById('R' + x).parentElement.style.backgroundColor = "#ff9191";
+       }
+     };
+   };
+   for(x in offeringsGrid.F){
+     if(offeringsGrid.F[x] != "nothing"){
+       document.getElementById('F' + x).parentElement.dataset.courseid= courseObj[user[0].userOfferings[offeringsGrid.F[x]].offeringCourseId].courseId; //write course id to html data attribute
+       document.getElementById('F' + x).parentElement.dataset.offeringid = user[0].userOfferings[offeringsGrid.F[x]].offeringId;
+       insert = "CRN: " + user[0].userOfferings[offeringsGrid.F[x]].offeringCRN + ", Sec " + user[0].userOfferings[offeringsGrid.F[x]].offeringSection + "</br>" + courseObj[user[0].userOfferings[offeringsGrid.F[x]].offeringCourseId].courseNumber + " " + courseObj[user[0].userOfferings[offeringsGrid.F[x]].offeringCourseId].courseName;
+       document.getElementById('F'+ x).innerHTML = insert;
+       var j = user[0].userOfferings[offeringsGrid.F[x]].offeringOfferingResponses.length - 1;
+       if(user[0].userOfferings[offeringsGrid.F[x]].offeringOfferingResponses[j] == null){ //if pending
+        document.getElementById('F' + x).parentElement.style.backgroundColor = "#ECECEC";
+      }else if(user[0].userOfferings[offeringsGrid.F[x]].offeringOfferingResponses[j].offeringResponseApproved == true){ //if approved
+         document.getElementById('F' + x).parentElement.style.backgroundColor = "#d1f9dd";
+       }else{
+         document.getElementById('F' + x).parentElement.style.backgroundColor = "#ff9191";
+       }
+     };
+   };
+   for(x in offeringsGrid.S){
+     if(offeringsGrid.S[x] != "nothing"){
+       insert = "CRN: " + user[0].userOfferings[offeringsGrid.S[x]].offeringCRN + ", Sec " + user[0].userOfferings[offeringsGrid.S[x]].offeringSection + "</br>" + courseObj[user[0].userOfferings[offeringsGrid.S[x]].offeringCourseId].courseNumber + " " + courseObj[user[0].userOfferings[offeringsGrid.S[x]].offeringCourseId].courseName;
+       document.getElementById('S'+ x).innerHTML = insert;
+       document.getElementById('S' + x).parentElement.style.backgroundColor = "#d1f9dd";
+     };
+   };
+ };
+
+  // to get user object from DB; called by timeblock fetch er after eval
+  xmlhttpUser.onreadystatechange = function() { //executes when state change
+    if (this.readyState == 4 && this.status == 200) {  //some ready state?
+      window.user = JSON.parse(this.responseText); //puts the response to the request in this var as a JSON
+      populateCalendar();
+      //display credit load for year
+      creditLoad = 0;
+      for(x in user[0].userOfferings){ //make sure to update this to only account this year's credits.
+        var semesterOne = semesterSeason + '-' + semesterYear;
+      var semesterTwo;
+      if(semesterSeason == "Fall"){
+        calc = semesterYear+1;
+        semesterTwo = "Spring-" + calc;
+      }else{
+        calc = semesterYear-1;
+        semesterTwo = "Fall-" + calc;
+      };
+      if(user[0].userOfferings[x].offeringSemester == semesterOne || user[0].userOfferings[x].offeringSemester == semesterTwo){
+        creditLoad = creditLoad + courseObj[user[0].userOfferings[x].offeringCourseId].courseCredits
+      };
+      };
+      document.getElementById('creditLoad').innerHTML = creditLoad;
+
+  //list verified classes
+      var verifiedString = ""
+    var semStr = semesterSeason + "-" + semesterYear;
+      for(var i=0; i<user[0].userOfferings.length; i++ ){//loop over all offerings
+        var j = user[0].userOfferings[i].offeringOfferingResponses.length-1 // index of last response to the course request
+        if(user[0].userOfferings[i].offeringOfferingResponses[j] == null){
+        }else if(user[0].userOfferings[i].offeringOfferingResponses[j].offeringResponseApproved == true && user[0].userOfferings[i].offeringSemester == semStr){ //if the last approval response to a course is true
+          //CRN, Section, Course number and Name
+          verifiedString = verifiedString + "Sec " + user[0].userOfferings[i].offeringSection + ", " + courseObj[user[0].userOfferings[i].offeringCourseId].courseNumber +" "+ courseObj[user[0].userOfferings[i].offeringCourseId].courseName + '<ul>';
+          //line break for each meeting time
+          for(var k=0; k<user[0].userOfferings[i].offeringOfferingTimes.length; k++ ){
+            a = user[0].userOfferings[i].offeringOfferingTimes[k].offeringTimeTimeBlockId; //returns an int (Id) to a
+            b = timeBlocks[a].timeBlockDoW;
+            c = timeBlocks[a].timeBlockStart;
+            d = timeBlocks[a].timeBlockEnd;
+            verifiedFullCourseInfo = verifiedString +"<li style='display:hidden'>" + b + " " + c + " - " + d + '</li>';
+            verifiedString = verifiedString ;
+          };
+          verifiedString = verifiedString + '</ul></br>';
+        };
+      };
+      document.getElementById('verifiedClasses').innerHTML = verifiedString;
+
+  //list pending classes
+      var pendingString = ""
+      for(var i=0; i<user[0].userOfferings.length; i++ ){//loop over all offerings
+        var j = user[0].userOfferings[i].offeringOfferingResponses.length-1 // index of last response to the course request
+        if(user[0].userOfferings[i].offeringOfferingResponses[j] == null && user[0].userOfferings[i].offeringSemester == semStr){// only list if there's no responses
+          //CRN, Section, Course number and Name
+          if(user[0].userOfferings[i].offeringSection == null){
+            pendingString = pendingString + "Sec pending, " + courseObj[user[0].userOfferings[i].offeringCourseId].courseNumber +" "+ courseObj[user[0].userOfferings[i].offeringCourseId].courseName + '<ul>';
+          }else{
+            pendingString = pendingString + "Sec " + user[0].userOfferings[i].offeringSection + ", " + courseObj[user[0].userOfferings[i].offeringCourseId].courseNumber +" "+ courseObj[user[0].userOfferings[i].offeringCourseId].courseName + '<ul>';
+          };
+          //line break for each meeting time
+          for(var k=0; k<user[0].userOfferings[i].offeringOfferingTimes.length; k++ ){
+            a = user[0].userOfferings[i].offeringOfferingTimes[k].offeringTimeTimeBlockId; //returns an int (Id) to a
+            b = timeBlocks[a].timeBlockDoW;
+            c = timeBlocks[a].timeBlockStart;
+            d = timeBlocks[a].timeBlockEnd;
+            pendingFullCourseInfo = pendingString +"<li>" + b + " " + c + " - " + d + '</li>';
+          };
+          pendingString = pendingString + '</ul></br>';
+        };
+      };
+      document.getElementById('pendingClasses').innerHTML = pendingString;
+        document.getElementsByClassName('selectedClassPopover').innerHTML = pendingFullCourseInfo;
+    };
+  };
+
+  // get timeblock data from DB; called by course fetch after eval
+  xmlhttpTimes.onreadystatechange = function() { //executes when state change
+  	if (this.readyState == 4 && this.status == 200) {  //some ready state?
+  		window.timeBlocks = JSON.parse(this.responseText); //puts the response to the request in this var as a JSON
+      var hold = {};
+      for(z=0; z<window.timeBlocks.length; z++){
+        h=window.timeBlocks[z].timeBlockId;
+        hold[h] = window.timeBlocks[z];
+      };
+      window.timeBlocks = hold;
+      for(x in timeBlocks){
+        n = timeBlocks[x].timeBlockName.toLowerCase();
+        n = "timeslot" + n
+        if(document.getElementById(n)!=null){document.getElementById(n).dataset.timeblockid = x};
+      };
+      //get user JSON
+  		xmlhttpUser.open("GET", userJsonURL + "", true ); //stage the request with optional fetch parameter (in "")
+      xmlhttpUser.setRequestHeader('Authorization', 'Bearer ' + userToken)
+      xmlhttpUser.send(); //send the request then parse
+  	};
+  };
+
+  xmlhttp.onreadystatechange = function() { //executes when state change
+  	if (this.readyState == 4 && this.status == 200) {
+  		fetchObj = JSON.parse(this.responseText); //puts the response to the request in this var as a JSON
+  		textReturn = "<select name='classInformation' id='selectedDropdown'>";
+  		for (var i = 0; i<fetchObj.length; i++){    //creation of the neccesary information
+  			fetchArr.push([]); //create new 2d array slot
+  			fetchArr[i][0] = fetchObj[i].courseId; //as many of this line as you need for the nested data
+  			fetchArr[i][1] = fetchObj[i].courseName;
+  			fetchArr[i][2] = fetchObj[i].courseNumber;
+  			fetchArr[i][3] = fetchObj[i].courseCredits;
+        courseObj[fetchObj[i].courseId] = fetchObj[i];
+  		};  //array is now created with the desired
+
+  		for (i in courseObj){
+  			var label = courseObj[i].courseNumber + ": " + courseObj[i].courseName;
+  			textReturn = textReturn+ "<option value=" +courseObj[i].courseId + ">" + label + "</option>";
+  		};
+  		textReturn = textReturn+"</select>";
+  		document.getElementById('classDropdown').innerHTML = textReturn;
+  		//get timeblock JSON, which gets user JSON
+  		xmlhttpTimes.open("GET", 'https://comas-api.ecrl.marist.edu/timeblocks/', true ); //stage the request with optional fetch parameter (in "")
+      xmlhttpTimes.setRequestHeader('Authorization', 'Bearer ' + userToken);
+      xmlhttpTimes.send(); //send the request then parse
+  	};
+  };
+
+  function offeringIdFinder(thisCell) {
+    try {
+      var element = document.getElementById(thisCell);
+      var courseId = (element.dataset.courseid);
+
+      for (var x = 1; x< courseObj.length; x++) {   //finds first instance of class instead of finding correct class...... consider checking for matching timeblocks as well & maybe switching to courseObj
+        if (courseObj[x].courseId == courseId) {     // it just searches for the first instance of course id then stops
+          for (var y = 0; 0 < courseObj.length; y++) {
+            if (user[0].userId == courseObj[y].courseOfferings[y].userId) {
+              var offeringId = fetchObj[y].courseOfferings[2].offeringId;
+          }
+        }
+      }
+    }
+      lastClickedOfferingId = offeringId;
+      return offeringId;
+    } catch {
+      //do nothing
+    }
+
+    function returnOfferingId() {
+      return lastClickedOfferingId;
+    }
+  }
+
+    function returnOfferingId() {
+      return lastClickedOfferingId;
+    }
+
+function populateTimeSlotDropDown() { //creates timeslot dropdown menu for 4 credit courses
+  dd1 = "<select name='tsDropdownDay1' id='tsDropdownDay1'><option value='M'>Monday</option><option value='T'>Tuesday</option><option value='W'>Wednesday</option><option value='R'>Thursday</option><option value='F'>Friday</option></select></br><select name='tsDropdownTime1' id='tsDropdownDay1'><option value='08:00:00'>8:00 AM</option><option value='09:30:00'>9:30 AM</option><option value='11:00:00'>11:00 AM</option><option value='12:30:00'>12:30 PM</option><option value='14:00:00'>2:00 PM</option><option value='15:30:00'>3:30 PM</option><option value='17:00:00'>5:00 PM</option><option value='18:30:00'>6:30 PM</option><option value='20:00:00'>8:00 PM</option></select>"
+  dd2 = "<select name='tsDropdownDay2' id='tsDropdownDay2'><option value='M'>Monday</option><option value='T'>Tuesday</option><option value='W'>Wednesday</option><option value='R'>Thursday</option><option value='F'>Friday</option></select></br><select name='tsDropdownTime1' id='tsDropdownDay1'><option value='08:00:00'>8:00 AM</option><option value='09:30:00'>9:30 AM</option><option value='11:00:00'>11:00 AM</option><option value='12:30:00'>12:30 PM</option><option value='14:00:00'>2:00 PM</option><option value='15:30:00'>3:30 PM</option><option value='17:00:00'>5:00 PM</option><option value='18:30:00'>6:30 PM</option><option value='20:00:00'>8:00 PM</option></select>"
+  dd3 = "<select name='tsDropdownDay3' id='tsDropdownDay3'><option value='M'>Monday</option><option value='T'>Tuesday</option><option value='W'>Wednesday</option><option value='R'>Thursday</option><option value='F'>Friday</option></select></br><select name='tsDropdownTime1' id='tsDropdownDay1'><option value='08:00:00'>8:00 AM</option><option value='09:30:00'>9:30 AM</option><option value='11:00:00'>11:00 AM</option><option value='12:30:00'>12:30 PM</option><option value='14:00:00'>2:00 PM</option><option value='15:30:00'>3:30 PM</option><option value='17:00:00'>5:00 PM</option><option value='18:30:00'>6:30 PM</option><option value='20:00:00'>8:00 PM</option></select>"
+  document.getElementById('tsdd1').innerHTML = dd1;
+  document.getElementById('tsdd2').innerHTML = dd2;
+  document.getElementById('tsdd3').innerHTML = dd3;
+};
+
+function calendarFilterApprovedAndPending() {
+
+}
+
+function calendarFilterApproved() {
+  for(var i=0; i<user[0].userOfferings.length; i++ ){		//create course reference table for calendar
+    for(var j=0; j<user[0].userOfferings[i].offeringOfferingTimes.length; j++ ){
+      a = user[0].userOfferings[i].offeringOfferingTimes[j].offeringTimeTimeBlockId //returns an int (Id) to a
+      b = timeBlocks[a].timeBlockDoW
+      c = timeBlocks[a].timeBlockStart
+      offeringsGrid[b][c] = i;  //creates a pointer to the offered course in the user data. access this in user.Offerings[x].
+    };
+  };
+  //fill calendar blocks with appropriate data
+    for(x in offeringsGrid.M){
+      if(offeringsGrid.M[x] != "nothing"){
+        insert = "CRN: " + user[0].userOfferings[offeringsGrid.M[x]].offeringCRN + ", Sec " + user[0].userOfferings[offeringsGrid.M[x]].offeringSection + "</br>" + fetchArr[user[0].userOfferings[offeringsGrid.M[x]].offeringCourseId][1] + " " + fetchArr[user[0].userOfferings[offeringsGrid.M[x]].offeringCourseId][2];
+        document.getElementById('M'+ x).innerHTML = insert;
+        document.getElementById('M' + x).parentElement.style.backgroundColor = "#d1f9dd";
+      };
+  //OfferingsGrid.M.x returns an int that is a pointer to a specific userOffering (a class with a CRN)
+    };
+    for(x in offeringsGrid.T){
+      if(offeringsGrid.T[x] != "nothing"){
+        insert = "CRN: " + user[0].userOfferings[offeringsGrid.T[x]].offeringCRN + ", Sec " + user[0].userOfferings[offeringsGrid.T[x]].offeringSection + "</br>" + fetchArr[user[0].userOfferings[offeringsGrid.T[x]].offeringCourseId][1] + " " + fetchArr[user[0].userOfferings[offeringsGrid.T[x]].offeringCourseId][2];
+        document.getElementById('T'+ x).innerHTML = insert;
+        document.getElementById('T' + x).parentElement.style.backgroundColor = "#d1f9dd";
+      };
+    };
+    for(x in offeringsGrid.W){
+      if(offeringsGrid.W[x] != "nothing"){
+        insert = "CRN: " + user[0].userOfferings[offeringsGrid.W[x]].offeringCRN + ", Sec " + user[0].userOfferings[offeringsGrid.W[x]].offeringSection + "</br>" + fetchArr[user[0].userOfferings[offeringsGrid.W[x]].offeringCourseId][1] + " " + fetchArr[user[0].userOfferings[offeringsGrid.W[x]].offeringCourseId][2];
+        document.getElementById('W'+ x).innerHTML = insert;
+        document.getElementById('W' + x).parentElement.style.backgroundColor = "#d1f9dd";
+      };
+    };
+    for(x in offeringsGrid.R){
+      if(offeringsGrid.R[x] != "nothing"){
+        insert = "CRN: " + user[0].userOfferings[offeringsGrid.R[x]].offeringCRN + ", Sec " + user[0].userOfferings[offeringsGrid.R[x]].offeringSection + "</br>" + fetchArr[user[0].userOfferings[offeringsGrid.R[x]].offeringCourseId][1] + " " + fetchArr[user[0].userOfferings[offeringsGrid.R[x]].offeringCourseId][2];
+        document.getElementById('R'+ x).innerHTML = insert;
+        document.getElementById('R' + x).parentElement.style.backgroundColor = "#d1f9dd";
+      };
+    };
+    for(x in offeringsGrid.F){
+      if(offeringsGrid.F[x] != "nothing"){
+        insert = "CRN: " + user[0].userOfferings[offeringsGrid.F[x]].offeringCRN + ", Sec " + user[0].userOfferings[offeringsGrid.F[x]].offeringSection + "</br>" + fetchArr[user[0].userOfferings[offeringsGrid.F[x]].offeringCourseId][1] + " " + fetchArr[user[0].userOfferings[offeringsGrid.F[x]].offeringCourseId][2];
+        document.getElementById('F'+ x).innerHTML = insert;
+        document.getElementById('F' + x).parentElement.style.backgroundColor = "#d1f9dd";
+      };
+    };
+    for(x in offeringsGrid.S){
+      if(offeringsGrid.S[x] != "nothing"){
+        insert = "CRN: " + user[0].userOfferings[offeringsGrid.S[x]].offeringCRN + ", Sec " + user[0].userOfferings[offeringsGrid.S[x]].offeringSection + "</br>" + fetchArr[user[0].userOfferings[offeringsGrid.S[x]].offeringCourseId][1] + " " + fetchArr[user[0].userOfferings[offeringsGrid.S[x]].offeringCourseId][2];
+        document.getElementById('S'+ x).innerHTML = insert;
+        document.getElementById('S' + x).parentElement.style.backgroundColor = "#d1f9dd";
+      };
+    };
+
+};
+
+function calendarFilterPending() {
+  var verifiedChecker = "rgb(209, 249, 221)";
+  for(x in offeringsGrid.M) {
+    var bgcolor = document.getElementById('M'+ x).parentElement.style.backgroundColor
+    if (bgcolor == verifiedChecker) {
+      document.getElementById('M' + x).style.display = "none";
+      document.getElementById('M' + x).parentElement.style.backgroundColor = "#ECECEC";
+    }
+  }
+  for(x in offeringsGrid.T) {
+    var bgcolor = document.getElementById('T'+ x).parentElement.style.backgroundColor
+    if (bgcolor == verifiedChecker) {
+      document.getElementById('T' + x).style.display = "none";
+      document.getElementById('T' + x).parentElement.style.backgroundColor = "#ECECEC";
+    }
+  }
+  for(x in offeringsGrid.W) {
+    var bgcolor = document.getElementById('W'+ x).parentElement.style.backgroundColor
+    if (bgcolor == verifiedChecker) {
+      document.getElementById('W' + x).style.display = "none";
+      document.getElementById('W' + x).parentElement.style.backgroundColor = "#ECECEC";
+    }
+  }
+
+  for(x in offeringsGrid.R) {
+    var bgcolor = document.getElementById('R'+ x).parentElement.style.backgroundColor
+    if (bgcolor == verifiedChecker) {
+      document.getElementById('R' + x).style.display = "none";
+      document.getElementById('R' + x).parentElement.style.backgroundColor = "#ECECEC";
+    }
+  }
+
+  for(x in offeringsGrid.F) {
+    var bgcolor = document.getElementById('F'+ x).parentElement.style.backgroundColor
+    if (bgcolor == verifiedChecker) {
+      document.getElementById('F' + x).style.display = "none";
+      document.getElementById('F' + x).parentElement.style.backgroundColor = "#ECECEC";
+
+    }
+  }
+}
+
+function datatagToClassInfo(thisCell) {
+  try {
+    var element = document.getElementById(thisCell);
+    var x = (element.dataset.courseid);
+    courseInfoGlobal = courseObj[x].courseName + "<br>" + courseObj[x].courseNumber + "<br>" + "Credits: " + courseObj[x].courseCredits + "<br>" + "Course Description: " + courseObj[x].courseDesc;
+    courseNameGlobal = courseObj[x].courseName;
+
+  } catch {
+    // do nothing
+  }
+}
+
+function courseIdToClassInfo(courseId) {
+  for (var x = 0; x < fetchObj.length; x++) {
+    if(fetchObj[x].courseId == courseId) {
+      var newCourseInformation = fetchObj[x].courseName + "<br>" + fetchObj[x].courseNumber + "<br>" + "(Waiting for Submit)";
+    }
+  }
+  return newCourseInformation;
+}
+
+function courseIdToClassCredits(courseId) {
+  for (var x = 0; x < fetchObj.length; x++) {
+    if(fetchObj[x].courseId == courseId) {
+      var creditsForSelectedCourse = fetchObj[x].courseCredits;
+    }
+  }
+  return creditsForSelectedCourse;
+};
+
+$("#classDropdown").change(function(form){
+  try {
+      var dropdownCourseId = $("select[name='classInformation']").val();
+      if (courseIdToClassCredits(dropdownCourseId) == 4) {
+        document.getElementById("selectExtraTimeblock").style.display = "block";
+        populateTimeSlotDropDown();
+      } else {
+        document.getElementById("selectExtraTimeblock").style.display = "none";
+      }
+  } catch {
+    //do nothing
+}
+});
+
+
+function dropdownCourseCreditSearch(form) {
+  try {
+      var dropdownCourseId = $("select[name='classInformation']").val();
+      if (courseIdToClassCredits(dropdownCourseId) == 4) {
+        document.getElementById("selectExtraTimeblock").style.display = "block";
+      }
+  } catch {
+  }
+}
+
+
+function readCourseInfoGlobal() {
+  var courseInfo = courseInfoGlobal;
+}
+
+function initalizePopoverOnClick(){  // wait for global last id to be changed before popovers are configured. Likely the root of multi-click popover bug
+  $(function () {
+    $('[data-toggle="popover"]').popover();
+    $('.cell-button').on('click', function (e) {
+    $('.cell-button').popover({title: "<h5>Selected Class Info</h5>", content: function(){if(document.getElementById(GLOBAL_LAST_CLICKED_ID).dataset.courseid = null){return "No Class";} else{ return courseInfoGlobal;}}, html: true, placement: "right"});
+    $('.cell-button').not(this).popover('hide');
+});
+ });
+};
+
+// BUG if selecting an extra timeslot, the function needs to be able to read if it is writing to an occupied timeslot
+// BUG each time a course is saved and pushed to pendingList[] it creates exponenially duplicating instances
+    function saveChanges(form) {
+      $("form").submit(function () {
+          this.reset;
+          var courseCode = $("input[name='courseCode']").val();
+          var courseTitle = $("input[name='courseTitle']").val();
+          var dropdownCourseId = $("select[name='classInformation']").val();
+          var stringOfInfo = courseIdToClassInfo(dropdownCourseId);
+          var selectedNumOfCredits = courseIdToClassCredits(dropdownCourseId);
+          var verificationStatus = document.getElementById(entire_cell_id).children[0].dataset.verificationstatus;
+
+          if (verificationStatus == 0 || verificationStatus == 1) {  // clicked cell is empty
+            var dayValue = $("select[name='tsDropdownDay1']").val();
+            var timeValue = $("select[name='tsDropdownTime1']").val();
+            var cell1 = null;
+            var cell2 = null;
+            var cell3 = null;
+
+            document.getElementById(entire_cell_id).children[0].innerHTML = stringOfInfo;
+            document.getElementById(entire_cell_id_comp).children[0].innerHTML = stringOfInfo;
+            document.getElementById(entire_cell_id).children[0].dataset.courseid = dropdownCourseId;
+            document.getElementById(entire_cell_id_comp).children[0].dataset.courseid = dropdownCourseId;
+            document.getElementById(entire_cell_id).children[0].style.backgroundColor = "#ECECEC";
+            document.getElementById(entire_cell_id_comp).children[0].style.backgroundColor = "#ECECEC";
+
+            try {
+              if (courseIdToClassCredits(dropdownCourseId) == 4) {
+
+                var dayTimeIdentifier = dayValue + timeValue;
+                  document.getElementById(dayTimeIdentifier).innerHTML = stringOfInfo;
+                  document.getElementById(entire_cell_id).children[0].dataset.courseid = dropdownCourseId;
+                  document.getElementById(dayTimeIdentifier).parentElement.dataset.courseid = dropdownCourseId;
+                  document.getElementById(dayTimeIdentifier).parentElement.style.backgroundColor = "#ECECEC";
+
+                  cell3 = document.getElementById(dayTimeIdentifier).parentElement.dataset.timeblockid;
+              }
+            } catch {
+              // do nothing
+            }
+
+            if (cell3  == null) {
+              cell1 = document.getElementById(entire_cell_id).children[0].dataset.timeblockid;
+              cell2 = document.getElementById(entire_cell_id_comp).children[0].dataset.timeblockid;
+              pendingList.push([user[0].userId, dropdownCourseId, "No academic needs", cell1, cell2, null]); // [userId, courseid, academic need, timeblock1, timeblock2, timeblock3] --> pendinglist[]
+              //reset cells to inital state
+              cell1 = null;
+              cell2 = null;
+              cell3 = null;
+              this.reset();
+
+          } else if (cell3 != null) {
+              cell1 = document.getElementById(entire_cell_id).children[0].dataset.timeblockid;
+              cell2 = document.getElementById(entire_cell_id_comp).children[0].dataset.timeblockid;
+              cell3 = document.getElementById(dayTimeIdentifier).parentElement.dataset.timeblockid;
+              pendingList.push([user[0].userId, dropdownCourseId, "No academic needs", cell1, cell2, cell3]); // [userId, courseid, academic need, timeblock1, timeblock2, timeblock3] --> pendinglist[]
+              cell1 = null;
+              cell2 = null;
+              cell3 = null;
+              this.reset();
+          }
+
+          } else if (verificationStatus == 2 || verificationStatus == 3) {
+            alert("You are attempting to write a course to a timeslot which already has another course in it. Please delete it first");
+            this.reset();
+            return false;
+          }
+
+          else {
+            alert("Something went wrong");
+            this.reset();
+            return false;
+          }
+
+          $('#exampleModal').modal('toggle');
+
+          return false;
+
+        })
+
+      };
+
+function showCourseForm() {
+  document.getElementById('addCourseForm').style.display = "block";
+  document.getElementById('addCourse').style.display = "none";
+}
+
+function showCourseOfferings() {
+  document.getElementById('addCourseOffering').style.display = "block";
+  document.getElementById('removeCourse').style.display = "none";
+}
+
+function commitOfferings(){
+    for(p=0; p < pendingList.length; p++){
+        if(p == 0){ //temp bugfix for form fill bug in saveChanges()
+            addOffering(pendingList[p][0],pendingList[p][1],pendingList[p][2],pendingList[p][3],pendingList[p][4],pendingList[p][5]);
+            alert("Changes will appear on page refresh.");
+
+        }else if(pendingList[p][3] != pendingList[p-1][3]){
+            addOffering(pendingList[p][0],pendingList[p][1],pendingList[p][2],pendingList[p][3],pendingList[p][4],pendingList[p][5]);
+            alert("Changes will appear on page refresh.");
+        };
+    };
+};
+
+function setSemester(){
+    semesterSeason = document.getElementById('semesterSeasonSelect').value;
+    semesterYear = document.getElementById('semesterYearSelect').value;
+    parseInt(semesterYear);
+    //wipe background pending array
+    pendingList = [];
+    showAnotherSemester(); //reinitialize and rebuild calendar using the new semester
+};
+
+function showAnotherSemester(){
+//wipe all calendar cells
+    for(x in offeringsGrid.M){
+        document.getElementById('M'+ x).innerHTML = "";
+        document.getElementById('M' + x).parentElement.style.backgroundColor = "#ECECEC";
+    };
+    for(x in offeringsGrid.T){
+        document.getElementById('T'+ x).innerHTML = "";
+        document.getElementById('T' + x).parentElement.style.backgroundColor = "#ECECEC";
+    };
+    for(x in offeringsGrid.W){
+        document.getElementById('W'+ x).innerHTML = "";
+        document.getElementById('W' + x).parentElement.style.backgroundColor = "#ECECEC";
+    };
+    for(x in offeringsGrid.R){
+        document.getElementById('R'+ x).innerHTML = "";
+        document.getElementById('R' + x).parentElement.style.backgroundColor = "#ECECEC";
+    };
+    for(x in offeringsGrid.F){
+        document.getElementById('F'+ x).innerHTML = "";
+        document.getElementById('F' + x).parentElement.style.backgroundColor = "#ECECEC";
+    };
+//    for(x in offeringsGrid.S){
+//        document.getElementById('S'+ x).innerHTML = "";
+//        document.getElementById('S' + x).parentElement.style.backgroundColor = "#ECECEC";
+//    };
+// reset calendar cell data tags
+    for(x in timeBlocks){
+        n = timeBlocks[x].timeBlockName.toLowerCase();
+        n = "timeslot" + n
+        if(document.getElementById(n)!=null){
+            document.getElementById(n).dataset.courseid=null;
+            document.getElementById(n).dataset.verificationstatus="0";
+        };
+    };
+//finally, build the calendar.
+    populateCalendar();
+};
+  xmlhttp.open("GET", jsonURL + "", true ); //stage the request with optional fetch parameter (in "")
+  xmlhttp.setRequestHeader('Authorization', 'Bearer ' + userToken);
+  xmlhttp.send(); // starts with courses, then timeblocks, then user, populates the calendar, calculates credits, then executes finishPage()
+  </script>
+</body>
+</html>
